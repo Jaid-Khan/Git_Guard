@@ -2,16 +2,19 @@ const express = require("express");
 
 const router = express.Router();
 
+const webhookAuthMiddleware = require(
+  "../middlewares/webhookAuthMiddleware"
+);
 
-// Test Route
-router.post("/github", (req, res) => {
-  console.log("GitHub Webhook Received");
+const {
+  webhookHandler,
+} = require("../controllers/webhookController");
 
-  res.status(200).json({
-    success: true,
-    message: "Webhook received successfully",
-  });
-});
 
+router.post(
+  "/github",
+  webhookAuthMiddleware,
+  webhookHandler
+);
 
 module.exports = router;
