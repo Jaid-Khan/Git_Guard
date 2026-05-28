@@ -1,4 +1,5 @@
 const asyncHandler = require("../utils/asyncHandler");
+const cleanDiff = require("../utils/diffCleaner");
 
 const fetchPullRequestDiff = require(
   "../services/github/fetchPullRequestDiff"
@@ -78,6 +79,18 @@ const webhookHandler = asyncHandler(async (req, res) => {
   console.log("==============================");
 
   console.dir(diffFiles, { depth: null });
+
+  /*
+  CLEAN DIFF FOR AI
+*/
+
+const cleanedDiff = cleanDiff(diffFiles);
+
+console.log("\n==============================");
+console.log("🧠 CLEANED DIFF FOR AI");
+console.log("==============================");
+
+console.dir(cleanedDiff, { depth: null });
 
   return res.status(200).json({
     success: true,
