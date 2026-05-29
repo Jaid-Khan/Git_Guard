@@ -1,17 +1,14 @@
 const asyncHandler = require("../utils/asyncHandler");
 const cleanDiff = require("../utils/diffCleaner");
+const generateReview = require("../services/ai/generateReview");
 
-const fetchPullRequestDiff = require(
-  "../services/github/fetchPullRequestDiff"
-);
+const fetchPullRequestDiff = require("../services/github/fetchPullRequestDiff");
 
 const webhookHandler = asyncHandler(async (req, res) => {
-
   const event = req.headers["x-github-event"];
 
   // Only handle PR events
   if (event !== "pull_request") {
-
     return res.status(200).json({
       success: true,
       message: "Ignored non pull_request event",
@@ -22,7 +19,6 @@ const webhookHandler = asyncHandler(async (req, res) => {
 
   // Only trigger when PR opened
   if (action !== "opened") {
-
     return res.status(200).json({
       success: true,
       message: `Ignored PR action: ${action}`,
@@ -84,14 +80,21 @@ const webhookHandler = asyncHandler(async (req, res) => {
   CLEAN DIFF FOR AI
 */
 
-const cleanedDiff = cleanDiff(diffFiles);
+  const cleanedDiff = cleanDiff(diffFiles);
 
-console.log("\n==============================");
-console.log("🧠 CLEANED DIFF FOR AI");
-console.log("==============================");
+  console.log("\n==============================");
+  console.log("🧠 CLEANED DIFF FOR AI");
+  console.log("==============================");
 
-console.dir(cleanedDiff, { depth: null });
+  console.dir(cleanedDiff, { depth: null });
 
+  const aiReview = await generateReview(cleanedDiff);
+
+  console.log("\n==============================");
+  console.log("🤖 AI REVIEW");
+  console.log("==============================");
+
+  console.log(aiReview);
   return res.status(200).json({
     success: true,
     message: "Pull request webhook processed",
