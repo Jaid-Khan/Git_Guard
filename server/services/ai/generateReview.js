@@ -1,40 +1,45 @@
 const groq = require("../../config/groq");
-
-const buildPrompt = require("./buildPrompt");
+const buildStructuredPrompt = require("./buildStructuredPrompt");
 
 const generateReview = async (cleanedFiles) => {
-
   try {
-
-    const prompt = buildPrompt(cleanedFiles);
+    const prompt = buildStructuredPrompt(cleanedFiles);
 
     console.log("\n==============================");
     console.log("🧠 SENDING CODE TO AI");
     console.log("==============================");
 
-    const completion =
-      await groq.chat.completions.create({
+    const completion = await groq.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
 
-        messages: [
-          {
-            role: "user",
-            content: prompt,
-          },
-        ],
+      model: "llama-3.1-8b-instant",
+      temperature: 0.2,
+    });
 
-        model: "llama-3.1-8b-instant",
+    let aiReview =
+      completion.choices[0]?.message?.content || "[]";
 
-        temperature: 0.2,
+    // Remove markdown code blocks if AI wraps JSON
+    aiReview = aiReview
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
 
-      });
+    try {
+      return JSON.parse(aiReview);
+    } catch (error) {
+      console.error("\n❌ Invalid JSON returned from AI");
+      console.error("\nRaw AI Response:");
+      console.dir(aiReview, { depth: null });
 
-    const aiReview =
-      completion.choices[0]?.message?.content;
-
-    return aiReview;
-
+      return [];
+    }
   } catch (error) {
-
     console.error("❌ AI Review Generation Failed");
     console.error(error.message);
 

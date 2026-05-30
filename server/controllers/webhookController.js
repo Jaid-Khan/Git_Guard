@@ -1,14 +1,17 @@
 const asyncHandler = require("../utils/asyncHandler");
 const cleanDiff = require("../utils/diffCleaner");
+
 const generateReview = require("../services/ai/generateReview");
 const postReviewComment = require("../services/github/postReviewComment");
-
 const fetchPullRequestDiff = require("../services/github/fetchPullRequestDiff");
+
+const formatReviewComment = require(
+  "../services/review/formatReview"
+);
 
 const webhookHandler = asyncHandler(async (req, res) => {
   const event = req.headers["x-github-event"];
 
-  // Only handle PR events
   if (event !== "pull_request") {
     return res.status(200).json({
       success: true,
@@ -18,7 +21,6 @@ const webhookHandler = asyncHandler(async (req, res) => {
 
   const action = req.body.action;
 
-  // Only trigger when PR opened
   if (action !== "opened") {
     return res.status(200).json({
       success: true,
@@ -27,7 +29,6 @@ const webhookHandler = asyncHandler(async (req, res) => {
   }
 
   const pullRequest = req.body.pull_request;
-
   const repository = req.body.repository;
 
   const prData = {
@@ -61,10 +62,6 @@ const webhookHandler = asyncHandler(async (req, res) => {
 
   console.log(prData);
 
-  /*
-    FETCH PR DIFF
-  */
-
   const diffFiles = await fetchPullRequestDiff({
     owner: repository.owner.login,
     repo: repository.name,
@@ -76,10 +73,6 @@ const webhookHandler = asyncHandler(async (req, res) => {
   console.log("==============================");
 
   console.dir(diffFiles, { depth: null });
-
-  /*
-  CLEAN DIFF FOR AI
-*/
 
   const cleanedDiff = cleanDiff(diffFiles);
 
@@ -95,22 +88,27 @@ const webhookHandler = asyncHandler(async (req, res) => {
   console.log("🤖 AI REVIEW");
   console.log("==============================");
 
-  console.log(aiReview);
+  console.dir(aiReview, { depth: null });
+
+  const reviewComment =
+    formatReviewComment(aiReview);
+
+  console.log("\n==============================");
+  console.log("📝 FORMATTED REVIEW");
+  console.log("==============================");
+
+  console.log(reviewComment);
 
   await postReviewComment({
     owner: repository.owner.login,
     repo: repository.name,
     pullNumber: pullRequest.number,
-    review: aiReview,
+    review: reviewComment,
   });
 
   return res.status(200).json({
     success: true,
     message: "Pull request webhook processed",
-    data: {
-      prData,
-      diffFiles,
-    },
   });
 });
 
