@@ -15,19 +15,13 @@ const ignoredExtensions = [
 ];
 
 const cleanDiff = (files) => {
-
   const cleanedFiles = [];
 
   for (const file of files) {
-
-    // Ignore lock files
-    if (
-      ignoredFiles.includes(file.filename)
-    ) {
+    if (ignoredFiles.includes(file.filename)) {
       continue;
     }
 
-    // Ignore image/binary files
     const isIgnoredExtension =
       ignoredExtensions.some((ext) =>
         file.filename.endsWith(ext)
@@ -37,7 +31,6 @@ const cleanDiff = (files) => {
       continue;
     }
 
-    // Ignore empty patch
     if (
       !file.patch ||
       file.patch === "No patch available"
@@ -45,25 +38,54 @@ const cleanDiff = (files) => {
       continue;
     }
 
-    // Keep only added lines
-    const addedLines = file.patch
-      .split("\n")
-      .filter(
-        (line) =>
-          line.startsWith("+") &&
-          !line.startsWith("+++")
-      )
-      .map((line) => line.substring(1))
-      .join("\n");
+    const patchLines = file.patch.split("\n");
 
-    // Ignore empty cleaned code
-    if (!addedLines.trim()) {
+    let githubLine = 0;
+
+    const codeLines = [];
+
+    for (const line of patchLines) {
+      if (line.startsWith("@@")) {
+        const match =
+          line.match(/\+(\d+)/);
+
+        if (match) {
+          githubLine =
+            Number(match[1]) - 1;
+        }
+
+        continue;
+      }
+
+      if (
+        line.startsWith("+") &&
+        !line.startsWith("+++")
+      ) {
+        githubLine++;
+
+        codeLines.push({
+          line: githubLine,
+          code: line.substring(1),
+        });
+
+        continue;
+      }
+
+      if (
+        !line.startsWith("-") &&
+        !line.startsWith("\\")
+      ) {
+        githubLine++;
+      }
+    }
+
+    if (!codeLines.length) {
       continue;
     }
 
     cleanedFiles.push({
       filename: file.filename,
-      code: addedLines,
+      changes: codeLines,
     });
   }
 

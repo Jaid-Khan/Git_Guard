@@ -1,13 +1,10 @@
 const asyncHandler = require("../utils/asyncHandler");
 const cleanDiff = require("../utils/diffCleaner");
-
 const generateReview = require("../services/ai/generateReview");
 const postReviewComment = require("../services/github/postReviewComment");
 const fetchPullRequestDiff = require("../services/github/fetchPullRequestDiff");
 
-const formatReviewComment = require(
-  "../services/review/formatReview"
-);
+const formatReviewComment = require("../services/review/formatReview");
 
 const webhookHandler = asyncHandler(async (req, res) => {
   const event = req.headers["x-github-event"];
@@ -82,16 +79,31 @@ const webhookHandler = asyncHandler(async (req, res) => {
 
   console.dir(cleanedDiff, { depth: null });
 
-  const aiReview = await generateReview(cleanedDiff);
+  const numberedDiff = cleanedDiff.map((file) => ({
+    filename: file.filename,
 
+    changes: file.changes.map((change) => ({
+      line: change.line,
+      code: change.code,
+    })),
+  }));
+
+  console.log("\n==============================");
+  console.log("🔢 NUMBERED DIFF");
+  console.log("==============================");
+
+  console.dir(numberedDiff, {
+    depth: null,
+  });
+
+  const aiReview = await generateReview(numberedDiff);
   console.log("\n==============================");
   console.log("🤖 AI REVIEW");
   console.log("==============================");
 
   console.dir(aiReview, { depth: null });
 
-  const reviewComment =
-    formatReviewComment(aiReview);
+  const reviewComment = formatReviewComment(aiReview);
 
   console.log("\n==============================");
   console.log("📝 FORMATTED REVIEW");
