@@ -1,6 +1,7 @@
 const asyncHandler = require("../utils/asyncHandler");
 const cleanDiff = require("../utils/diffCleaner");
 const generateReview = require("../services/ai/generateReview");
+const postReviewComment = require("../services/github/postReviewComment");
 
 const fetchPullRequestDiff = require("../services/github/fetchPullRequestDiff");
 
@@ -95,6 +96,14 @@ const webhookHandler = asyncHandler(async (req, res) => {
   console.log("==============================");
 
   console.log(aiReview);
+
+  await postReviewComment({
+    owner: repository.owner.login,
+    repo: repository.name,
+    pullNumber: pullRequest.number,
+    review: aiReview,
+  });
+
   return res.status(200).json({
     success: true,
     message: "Pull request webhook processed",
