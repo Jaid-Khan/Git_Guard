@@ -18,12 +18,18 @@ const webhookHandler = asyncHandler(async (req, res) => {
 
   const action = req.body.action;
 
-  if (action !== "opened") {
+  const allowedActions = ["opened", "synchronize", "reopened"];
+
+  if (!allowedActions.includes(action)) {
     return res.status(200).json({
       success: true,
       message: `Ignored PR action: ${action}`,
     });
   }
+
+  console.log("\n==============================");
+  console.log(`🚀 PR EVENT: ${action}`);
+  console.log("==============================");
 
   const pullRequest = req.body.pull_request;
   const repository = req.body.repository;
