@@ -54,9 +54,28 @@ const getRepositoryStats =
     });
   };
 
+  const getRecentReviews = async (
+  req,
+  res
+) => {
+  const reviews = await Review.find()
+  .select(
+    "repoName prNumber prTitle prAuthor totalIssues reviewedAt"
+  )
+  .sort({ reviewedAt: -1 })
+  .limit(10);
+
+  res.status(200).json({
+    success: true,
+    count: reviews.length,
+    data: reviews,
+  });
+};
+
 module.exports = {
   getRepositoryReviews,
   getReviewById,
   getReviewStats,
   getRepositoryStats,
+  getRecentReviews,
 };
