@@ -2,6 +2,7 @@ const Review = require("../models/Review");
 const {
   getAnalytics,
   getRepositoryAnalytics,
+  getTopRepositories,
 } = require("../services/review/reviewAnalytics");
 
 const getRepositoryReviews = async (req, res) => {
@@ -72,10 +73,23 @@ const getRepositoryStats =
   });
 };
 
+const getTopRepos =
+  async (req, res) => {
+    const repos =
+      await getTopRepositories();
+
+    res.status(200).json({
+      success: true,
+      count: repos.length,
+      data: repos,
+    });
+  };
+
 module.exports = {
   getRepositoryReviews,
   getReviewById,
   getReviewStats,
   getRepositoryStats,
   getRecentReviews,
+  getTopRepos
 };

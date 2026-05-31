@@ -59,9 +59,7 @@ const getAnalytics = async () => {
   return stats;
 };
 
-const getRepositoryAnalytics = async (
-  repoName
-) => {
+const getRepositoryAnalytics = async (repoName) => {
   const reviews = await Review.find({
     repoName,
   });
@@ -124,8 +122,38 @@ const getRepositoryAnalytics = async (
   return stats;
 };
 
+const getTopRepositories = async () => {
+  const stats = await Review.aggregate([
+    {
+      $group: {
+        _id: "$repoName",
+
+        totalReviews: {
+          $sum: 1,
+        },
+
+        totalIssues: {
+          $sum: "$totalIssues",
+        },
+      },
+    },
+
+    {
+      $sort: {
+        totalReviews: -1,
+      },
+    },
+
+    {
+      $limit: 10,
+    },
+  ]);
+
+  return stats;
+};
+
 module.exports = {
   getAnalytics,
   getRepositoryAnalytics,
+  getTopRepositories,
 };
-
