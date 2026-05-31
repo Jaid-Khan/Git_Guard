@@ -1,15 +1,7 @@
-const RepositorySettings = require(
-  "../models/RepositorySettings"
-);
+const RepositorySettings = require("../models/RepositorySettings");
 
-const createSettings = async (
-  req,
-  res
-) => {
-  const settings =
-    await RepositorySettings.create(
-      req.body
-    );
+const createSettings = async (req, res) => {
+  const settings = await RepositorySettings.create(req.body);
 
   res.status(201).json({
     success: true,
@@ -17,14 +9,10 @@ const createSettings = async (
   });
 };
 
-const getSettings = async (
-  req,
-  res
-) => {
-  const settings =
-    await RepositorySettings.findOne({
-      repoName: req.params.repoName,
-    });
+const getSettings = async (req, res) => {
+  const settings = await RepositorySettings.findOne({
+    repoName: req.params.repoName,
+  });
 
   if (!settings) {
     return res.status(404).json({
@@ -39,21 +27,16 @@ const getSettings = async (
   });
 };
 
-const updateSettings = async (
-  req,
-  res
-) => {
-  const settings =
-    await RepositorySettings.findOneAndUpdate(
-      {
-        repoName:
-          req.params.repoName,
-      },
-      req.body,
-      {
-        new: true,
-      }
-    );
+const updateSettings = async (req, res) => {
+  const settings = await RepositorySettings.findOneAndUpdate(
+    {
+      repoName: req.params.repoName,
+    },
+    req.body,
+    {
+      returnDocument: "after",
+    },
+  );
 
   if (!settings) {
     return res.status(404).json({

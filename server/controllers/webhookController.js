@@ -7,6 +7,7 @@ const postInlineReview = require("../services/github/postInlineReview");
 const Review = require("../models/Review");
 const formatReviewComment = require("../services/review/formatReview");
 const validateAIReview = require("../services/ai/validateAIReview");
+const getRepoSettings = require("../services/settings/getRepoSettings");
 
 const webhookHandler = asyncHandler(async (req, res) => {
   const event = req.headers["x-github-event"];
@@ -66,6 +67,23 @@ const webhookHandler = asyncHandler(async (req, res) => {
   console.log("==============================");
 
   console.log(prData);
+
+  const repoSettings = await getRepoSettings(repository.full_name);
+
+  console.log("\n==============================");
+  console.log("⚙ REPOSITORY SETTINGS");
+  console.log("==============================");
+
+  console.log(repoSettings);
+
+  if (!repoSettings.enabled) {
+    console.log("⏭ Reviews disabled for repository");
+
+    return res.status(200).json({
+      success: true,
+      message: "Repository reviews disabled",
+    });
+  }
 
   const diffData = await fetchPullRequestDiff({
     owner: repository.owner.login,
