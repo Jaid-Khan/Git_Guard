@@ -1,10 +1,10 @@
 const Review = require("../models/Review");
+const getAnalytics = require("../services/review/reviewAnalytics");
 
 const getRepositoryReviews = async (req, res) => {
   const reviews = await Review.find({
     repoName: req.params.repoName,
-  })
-    .sort({ reviewedAt: -1 });
+  }).sort({ reviewedAt: -1 });
 
   res.status(200).json({
     success: true,
@@ -14,9 +14,7 @@ const getRepositoryReviews = async (req, res) => {
 };
 
 const getReviewById = async (req, res) => {
-  const review = await Review.findById(
-    req.params.id
-  );
+  const review = await Review.findById(req.params.id);
 
   if (!review) {
     return res.status(404).json({
@@ -31,7 +29,23 @@ const getReviewById = async (req, res) => {
   });
 };
 
+
+const getReviewStats = async (
+  req,
+  res
+) => {
+  const stats =
+    await getAnalytics();
+
+  res.status(200).json({
+    success: true,
+    data: stats,
+  });
+};
+
 module.exports = {
   getRepositoryReviews,
   getReviewById,
+  getReviewStats,
 };
+
