@@ -1,0 +1,37 @@
+const Review = require("../models/Review");
+
+const getRepositoryReviews = async (req, res) => {
+  const reviews = await Review.find({
+    repoName: req.params.repoName,
+  })
+    .sort({ reviewedAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    count: reviews.length,
+    data: reviews,
+  });
+};
+
+const getReviewById = async (req, res) => {
+  const review = await Review.findById(
+    req.params.id
+  );
+
+  if (!review) {
+    return res.status(404).json({
+      success: false,
+      message: "Review not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    data: review,
+  });
+};
+
+module.exports = {
+  getRepositoryReviews,
+  getReviewById,
+};

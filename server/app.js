@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const webhookRoutes = require("./routes/webhookRoutes");
 const errorMiddleware = require("./middlewares/errorMiddleware");
 const settingsRoutes = require("./routes/settingsRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
 
 const app = express();
 
@@ -39,6 +40,8 @@ app.get("/", (req, res) => {
 // API Routes
 app.use("/api/webhook", webhookRoutes);
 app.use("/api/settings", settingsRoutes);
+app.use("/api/reviews", reviewRoutes);
+
 // Error Middleware
 app.use(errorMiddleware);
 

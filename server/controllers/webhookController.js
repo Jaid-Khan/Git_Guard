@@ -166,7 +166,7 @@ const webhookHandler = asyncHandler(async (req, res) => {
   console.log(`After Category Filter: ${categoryFilteredReview.length}`);
 
   console.log(`After Severity Filter: ${filteredReview.length}`);
-  
+
   for (const issue of filteredReview) {
     const reviewText = `
 ### ${issue.issue}
@@ -219,8 +219,18 @@ ${issue.suggestion}
 
   await Review.create({
     repoName: repository.full_name,
+
     prNumber: pullRequest.number,
+
+    prTitle: pullRequest.title,
+
+    prAuthor: pullRequest.user.login,
+
     commitSha,
+
+    issues: filteredReview,
+
+    totalIssues: filteredReview.length,
   });
 
   console.log("\n==============================");
