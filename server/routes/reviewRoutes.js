@@ -7,6 +7,7 @@ const {
   getRepositoryStats,
   getRecentReviews,
   getTopRepos,
+  getSeverityStats,
 } = require("../controllers/reviewController");
 
 const router = express.Router();
@@ -17,6 +18,7 @@ router.get("/stats/dashboard", getReviewStats);
 router.get("/stats/repository/:repoName", getRepositoryStats);
 router.get("/recent/activity", getRecentReviews);
 router.get("/stats/top-repositories", getTopRepos);
+router.get("/stats/severity", getSeverityStats);
 router.get("/:id", getReviewById);
 
 module.exports = router;

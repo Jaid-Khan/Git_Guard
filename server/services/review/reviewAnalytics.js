@@ -152,8 +152,32 @@ const getTopRepositories = async () => {
   return stats;
 };
 
+const getSeverityAnalytics =
+  async () => {
+    const result =
+      await Review.aggregate([
+        {
+          $unwind: "$issues",
+        },
+
+        {
+          $group: {
+            _id: "$issues.severity",
+
+            count: {
+              $sum: 1,
+            },
+          },
+        },
+      ]);
+
+    return result;
+  };
+
 module.exports = {
   getAnalytics,
   getRepositoryAnalytics,
   getTopRepositories,
+  getSeverityAnalytics,
+  
 };

@@ -3,6 +3,7 @@ const {
   getAnalytics,
   getRepositoryAnalytics,
   getTopRepositories,
+  getSeverityAnalytics,
 } = require("../services/review/reviewAnalytics");
 
 const getRepositoryReviews = async (req, res) => {
@@ -85,11 +86,25 @@ const getTopRepos =
     });
   };
 
+
+  const getSeverityStats =
+  async (req, res) => {
+    const stats =
+      await getSeverityAnalytics();
+
+    res.status(200).json({
+      success: true,
+      data: stats,
+    });
+  };
+
+
 module.exports = {
   getRepositoryReviews,
   getReviewById,
   getReviewStats,
   getRepositoryStats,
   getRecentReviews,
-  getTopRepos
+  getTopRepos,
+  getSeverityStats,
 };
