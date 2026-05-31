@@ -174,10 +174,102 @@ const getSeverityAnalytics =
     return result;
   };
 
+
+  const getCategoryAnalytics = async () => {
+  const result = await Review.aggregate([
+    {
+      $unwind: "$issues",
+    },
+
+    {
+      $group: {
+        _id: "$issues.category",
+
+        count: {
+          $sum: 1,
+        },
+      },
+    },
+
+    {
+      $sort: {
+        count: -1,
+      },
+    },
+  ]);
+
+  return result;
+};
+
+const getRepositoryLeaderboard = async () => {
+  const result = await Review.aggregate([
+    {
+      $unwind: "$issues",
+    },
+
+    {
+      $group: {
+        _id: "$repoName",
+
+        totalReviews: {
+          $addToSet: "$_id",
+        },
+
+        totalIssues: {
+          $sum: 1,
+        },
+
+        critical: {
+          $sum: {
+            $cond: [
+              { $eq: ["$issues.severity", "CRITICAL"] },
+              1,
+              0,
+            ],
+          },
+        },
+
+        high: {
+          $sum: {
+            $cond: [
+              { $eq: ["$issues.severity", "HIGH"] },
+              1,
+              0,
+            ],
+          },
+        },
+      },
+    },
+
+    {
+      $project: {
+        repoName: "$_id",
+
+        totalReviews: {
+          $size: "$totalReviews",
+        },
+
+        totalIssues: 1,
+        critical: 1,
+        high: 1,
+      },
+    },
+
+    {
+      $sort: {
+        totalIssues: -1,
+      },
+    },
+  ]);
+
+  return result;
+};
+
 module.exports = {
   getAnalytics,
   getRepositoryAnalytics,
   getTopRepositories,
   getSeverityAnalytics,
-  
+  getCategoryAnalytics,
+  getRepositoryLeaderboard,
 };

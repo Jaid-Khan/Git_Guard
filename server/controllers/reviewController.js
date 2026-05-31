@@ -4,6 +4,8 @@ const {
   getRepositoryAnalytics,
   getTopRepositories,
   getSeverityAnalytics,
+  getCategoryAnalytics,
+  getRepositoryLeaderboard,
 } = require("../services/review/reviewAnalytics");
 
 const getRepositoryReviews = async (req, res) => {
@@ -43,29 +45,20 @@ const getReviewStats = async (req, res) => {
   });
 };
 
-const getRepositoryStats =
-  async (req, res) => {
-    const stats =
-      await getRepositoryAnalytics(
-        req.params.repoName
-      );
+const getRepositoryStats = async (req, res) => {
+  const stats = await getRepositoryAnalytics(req.params.repoName);
 
-    res.status(200).json({
-      success: true,
-      data: stats,
-    });
-  };
+  res.status(200).json({
+    success: true,
+    data: stats,
+  });
+};
 
-  const getRecentReviews = async (
-  req,
-  res
-) => {
+const getRecentReviews = async (req, res) => {
   const reviews = await Review.find()
-  .select(
-    "repoName prNumber prTitle prAuthor totalIssues reviewedAt"
-  )
-  .sort({ reviewedAt: -1 })
-  .limit(10);
+    .select("repoName prNumber prTitle prAuthor totalIssues reviewedAt")
+    .sort({ reviewedAt: -1 })
+    .limit(10);
 
   res.status(200).json({
     success: true,
@@ -74,30 +67,43 @@ const getRepositoryStats =
   });
 };
 
-const getTopRepos =
-  async (req, res) => {
-    const repos =
-      await getTopRepositories();
+const getTopRepos = async (req, res) => {
+  const repos = await getTopRepositories();
 
-    res.status(200).json({
-      success: true,
-      count: repos.length,
-      data: repos,
-    });
-  };
+  res.status(200).json({
+    success: true,
+    count: repos.length,
+    data: repos,
+  });
+};
 
+const getSeverityStats = async (req, res) => {
+  const stats = await getSeverityAnalytics();
 
-  const getSeverityStats =
-  async (req, res) => {
-    const stats =
-      await getSeverityAnalytics();
+  res.status(200).json({
+    success: true,
+    data: stats,
+  });
+};
 
-    res.status(200).json({
-      success: true,
-      data: stats,
-    });
-  };
+const getCategoryStats = async (req, res) => {
+  const stats = await getCategoryAnalytics();
 
+  res.status(200).json({
+    success: true,
+    data: stats,
+  });
+};
+
+const getLeaderboard = async (req, res) => {
+  const leaderboard = await getRepositoryLeaderboard();
+
+  res.status(200).json({
+    success: true,
+    count: leaderboard.length,
+    data: leaderboard,
+  });
+};
 
 module.exports = {
   getRepositoryReviews,
@@ -107,4 +113,6 @@ module.exports = {
   getRecentReviews,
   getTopRepos,
   getSeverityStats,
+  getCategoryStats,
+  getLeaderboard,
 };
