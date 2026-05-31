@@ -1,8 +1,4 @@
-const ignoredFiles = [
-  "package-lock.json",
-  "yarn.lock",
-  "pnpm-lock.yaml",
-];
+const ignoredFiles = ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"];
 
 const ignoredExtensions = [
   ".png",
@@ -22,19 +18,15 @@ const cleanDiff = (files) => {
       continue;
     }
 
-    const isIgnoredExtension =
-      ignoredExtensions.some((ext) =>
-        file.filename.endsWith(ext)
-      );
+    const isIgnoredExtension = ignoredExtensions.some((ext) =>
+      file.filename.endsWith(ext),
+    );
 
     if (isIgnoredExtension) {
       continue;
     }
 
-    if (
-      !file.patch ||
-      file.patch === "No patch available"
-    ) {
+    if (!file.patch || file.patch === "No patch available") {
       continue;
     }
 
@@ -46,35 +38,33 @@ const cleanDiff = (files) => {
 
     for (const line of patchLines) {
       if (line.startsWith("@@")) {
-        const match =
-          line.match(/\+(\d+)/);
+        const match = line.match(/\+(\d+)/);
 
         if (match) {
-          githubLine =
-            Number(match[1]) - 1;
+          githubLine = Number(match[1]) - 1;
         }
 
         continue;
       }
 
-      if (
-        line.startsWith("+") &&
-        !line.startsWith("+++")
-      ) {
+      if (line.startsWith("+") && !line.startsWith("+++")) {
         githubLine++;
+
+        const code = line.substring(1);
+
+        if (!code.trim()) {
+          continue;
+        }
 
         codeLines.push({
           line: githubLine,
-          code: line.substring(1),
+          code,
         });
 
         continue;
       }
 
-      if (
-        !line.startsWith("-") &&
-        !line.startsWith("\\")
-      ) {
+      if (!line.startsWith("-") && !line.startsWith("\\")) {
         githubLine++;
       }
     }

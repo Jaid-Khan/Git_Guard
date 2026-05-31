@@ -23,6 +23,20 @@ ${item.explanation}
 
 ### Recommendation
 ${item.suggestion}
+`;
+
+    if (item.fixedCode) {
+      markdown += `
+
+### Suggested Fix
+
+\`\`\`js
+${item.fixedCode}
+\`\`\`
+`;
+    }
+
+    markdown += `
 
 ---
 `;

@@ -5,39 +5,53 @@ const fetchPullRequestDiff = async ({
   repo,
   pullNumber,
 }) => {
-
   try {
-
     console.log("\n==============================");
     console.log("📥 Fetching Pull Request Diff");
     console.log("==============================");
 
-    // Fetch PR Files
-    const response = await octokit.pulls.listFiles({
-      owner,
-      repo,
-      pull_number: pullNumber,
-    });
+    const filesResponse =
+      await octokit.pulls.listFiles({
+        owner,
+        repo,
+        pull_number: pullNumber,
+      });
 
-    const files = response.data;
+    const prResponse =
+      await octokit.pulls.get({
+        owner,
+        repo,
+        pull_number: pullNumber,
+      });
 
-    // Extract Important Diff Data
-    const diffFiles = files.map((file) => ({
-      filename: file.filename,
-      status: file.status,
-      additions: file.additions,
-      deletions: file.deletions,
-      changes: file.changes,
-      patch: file.patch || "No patch available",
-    }));
+    const latestCommitSha =
+      prResponse.data.head.sha;
 
-    console.log(`✅ Total Changed Files: ${diffFiles.length}`);
+    const diffFiles =
+      filesResponse.data.map((file) => ({
+        filename: file.filename,
+        status: file.status,
+        additions: file.additions,
+        deletions: file.deletions,
+        changes: file.changes,
+        patch:
+          file.patch ||
+          "No patch available",
+      }));
 
-    return diffFiles;
+    console.log(
+      `✅ Total Changed Files: ${diffFiles.length}`
+    );
 
+    return {
+      files: diffFiles,
+      commitSha: latestCommitSha,
+    };
   } catch (error) {
+    console.error(
+      "❌ Failed to Fetch PR Diff"
+    );
 
-    console.error("❌ Failed to Fetch PR Diff");
     console.error(error.message);
 
     throw error;

@@ -1,32 +1,33 @@
 const buildStructuredPrompt = (files) => {
   return `
-You are an expert software engineer.
+You are a Senior Software Engineer, Security Engineer, and Code Reviewer.
 
-Review the provided pull request changes.
+Analyze ONLY the provided code changes.
 
-IMPORTANT:
+IMPORTANT RULES:
 
-Each code block contains REAL GitHub line numbers.
+1. Return ONLY valid JSON.
+2. Do NOT return markdown.
+3. Do NOT return explanations outside JSON.
+4. Every issue MUST contain the exact GitHub line number.
+5. If possible, provide a corrected code example.
 
-Return issues using the exact line number.
-
-Return ONLY valid JSON.
-
-Format:
+Return format:
 
 [
   {
     "file": "app.js",
-    "line": 17,
+    "line": 31,
     "severity": "HIGH",
     "category": "Security",
     "issue": "Hardcoded Secret",
-    "explanation": "Why this is dangerous",
-    "suggestion": "How to fix it"
+    "explanation": "Hardcoded secrets can expose sensitive data.",
+    "suggestion": "Move secrets to environment variables.",
+    "fixedCode": "const apiKey = process.env.API_KEY;"
   }
 ]
 
-If no issues:
+If no issues exist:
 
 []
 
