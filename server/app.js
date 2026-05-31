@@ -5,8 +5,8 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 
 const webhookRoutes = require("./routes/webhookRoutes");
-
 const errorMiddleware = require("./middlewares/errorMiddleware");
+const settingsRoutes = require("./routes/settingsRoutes");
 
 const app = express();
 
@@ -25,7 +25,7 @@ app.use(
     verify: (req, res, buf) => {
       req.rawBody = buf.toString();
     },
-  })
+  }),
 );
 
 // Parse URL Encoded Data
@@ -38,7 +38,7 @@ app.get("/", (req, res) => {
 
 // API Routes
 app.use("/api/webhook", webhookRoutes);
-
+app.use("/api/settings", settingsRoutes);
 // Error Middleware
 app.use(errorMiddleware);
 
