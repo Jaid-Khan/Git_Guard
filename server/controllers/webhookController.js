@@ -8,6 +8,8 @@ const Review = require("../models/Review");
 const formatReviewComment = require("../services/review/formatReview");
 const validateAIReview = require("../services/ai/validateAIReview");
 const getRepoSettings = require("../services/settings/getRepoSettings");
+const filterBySeverity = require("../services/review/filterBySeverity");
+const filterReviewsBySettings = require("../services/review/filterReviewsBySettings");
 
 const webhookHandler = asyncHandler(async (req, res) => {
   const event = req.headers["x-github-event"];
@@ -141,8 +143,17 @@ const webhookHandler = asyncHandler(async (req, res) => {
   }
 
   const aiReview = await generateReview(numberedDiff);
-
   const safeReview = validateAIReview(aiReview);
+
+  const categoryFilteredReview = filterReviewsBySettings(
+    safeReview,
+    repoSettings,
+  );
+
+  const filteredReview = filterBySeverity(
+    categoryFilteredReview,
+    repoSettings.minSeverity,
+  );
 
   console.log("\n==============================");
   console.log("🛡 VALIDATED AI REVIEW");
@@ -152,7 +163,11 @@ const webhookHandler = asyncHandler(async (req, res) => {
 
   console.log(`Valid Issues: ${safeReview.length}`);
 
-  for (const issue of safeReview) {
+  console.log(`After Category Filter: ${categoryFilteredReview.length}`);
+
+  console.log(`After Severity Filter: ${filteredReview.length}`);
+  
+  for (const issue of filteredReview) {
     const reviewText = `
 ### ${issue.issue}
 
@@ -183,9 +198,11 @@ ${issue.suggestion}
   console.log("🤖 AI REVIEW");
   console.log("==============================");
 
-  console.dir(safeReview, { depth: null });
+  console.dir(filteredReview, {
+    depth: null,
+  });
 
-  const reviewComment = formatReviewComment(safeReview);
+  const reviewComment = formatReviewComment(filteredReview);
 
   console.log("\n==============================");
   console.log("📝 FORMATTED REVIEW");
