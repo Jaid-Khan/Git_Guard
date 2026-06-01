@@ -19,7 +19,7 @@ const Repositories = () => {
       </h1>
 
       <RepositoryTable
-        repositories={data.data}
+        repositories={data?.data || []}
       />
     </div>
   );

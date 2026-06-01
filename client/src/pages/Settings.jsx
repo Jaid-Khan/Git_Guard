@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import useApi from "../hooks/useApi";
 
 import {
@@ -7,24 +8,25 @@ import {
 
 import SettingsForm from "../components/SettingsForm";
 
-const repoName =
-  "Jaid-Khan/Gitguard-PR-Test-Repo";
-
 const Settings = () => {
-  const { data, loading } =
-    useApi(() =>
-      getSettings(repoName)
-    );
+  const { repoName } = useParams();
 
-  const handleSave = async (
-    updatedSettings
-  ) => {
-    await updateSettings(
-      repoName,
-      updatedSettings
-    );
+  const { data, loading } = useApi(() =>
+    getSettings(repoName)
+  );
 
-    alert("Settings Saved");
+  const handleSave = async (updatedSettings) => {
+    try {
+      await updateSettings(
+        repoName,
+        updatedSettings
+      );
+
+      alert("Settings Saved");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to Save Settings");
+    }
   };
 
   if (loading) {

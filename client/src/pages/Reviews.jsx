@@ -13,8 +13,11 @@ const Reviews = () => {
     return <h1>Loading...</h1>;
   }
 
-  const filteredReviews = data.data.filter((review) =>
-    review.repoName.toLowerCase().includes(search.toLowerCase())
+  const filteredReviews = (data?.data || []).filter(
+    (review) =>
+      review.repoName
+        .toLowerCase()
+        .includes(search.toLowerCase())
   );
 
   return (

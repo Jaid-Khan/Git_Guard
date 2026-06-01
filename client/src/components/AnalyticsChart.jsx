@@ -15,6 +15,18 @@ const AnalyticsChart = ({
   data,
   type,
 }) => {
+  if (!data || data.length === 0) {
+    return (
+      <div className="bg-white p-4 rounded-xl shadow">
+        <h2 className="font-bold mb-4">
+          {title}
+        </h2>
+
+        <p>No data available</p>
+      </div>
+    );
+  }
+
   if (type === "pie") {
     return (
       <div className="bg-white p-4 rounded-xl shadow">
@@ -34,9 +46,7 @@ const AnalyticsChart = ({
               outerRadius={100}
             >
               {data.map((entry, index) => (
-                <Cell
-                  key={index}
-                />
+                <Cell key={index} />
               ))}
             </Pie>
 

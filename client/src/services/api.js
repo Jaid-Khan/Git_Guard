@@ -4,32 +4,53 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-export const getAnalytics = () => api.get("/analytics");
+// Dashboard
 
-export const getSeverityAnalytics = () => api.get("/analytics/severity");
+export const getOverviewAnalytics = () =>
+  api.get("/reviews/stats/dashboard");
 
-export const getCategoryAnalytics = () => api.get("/analytics/categories");
+export const getLeaderboard = () =>
+  api.get("/reviews/stats/leaderboard");
 
-export const getRepositoryAnalytics = () => api.get("/analytics/repositories");
+// Analytics
 
-export const getReviews = () => api.get("/reviews");
+export const getSeverityAnalytics = () =>
+  api.get("/reviews/stats/severity");
 
-export const getReviewById = (id) => api.get(`/reviews/${id}`);
+export const getCategoryAnalytics = () =>
+  api.get("/reviews/stats/categories");
 
-export const getLeaderboard = () => api.get("/analytics/leaderboard");
+// Reviews
+
+export const getReviews = () =>
+  api.get("/reviews/recent/activity");
+
+export const getReviewById = (id) =>
+  api.get(`/reviews/${id}`);
+
+// Repository Analytics
+
+export const getRepositoryAnalytics = (repoName) =>
+  api.get(
+    `/reviews/stats/repository/${encodeURIComponent(
+      repoName
+    )}`
+  );
+
+// Settings
 
 export const getSettings = (repoName) =>
-  api.get(`/settings/${encodeURIComponent(repoName)}`);
+  api.get(
+    `/settings/${encodeURIComponent(repoName)}`
+  );
 
-export const updateSettings = (repoName, data) =>
-  api.put(`/settings/${encodeURIComponent(repoName)}`, data);
-
-export const getOverviewAnalytics = () => api.get("/analytics/overview");
-
-export const getSeverityDistribution = () =>
-  api.get("/analytics/severity-distribution");
-
-export const getCategoryDistribution = () =>
-  api.get("/analytics/category-distribution");
+export const updateSettings = (
+  repoName,
+  data
+) =>
+  api.put(
+    `/settings/${encodeURIComponent(repoName)}`,
+    data
+  );
 
 export default api;

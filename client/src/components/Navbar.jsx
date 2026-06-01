@@ -8,7 +8,7 @@ const Navbar = () => {
 
         <div>
           <span className="text-gray-600">
-            Jaid Khan
+            GitHub PR Review System
           </span>
         </div>
       </div>

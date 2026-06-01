@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const ReviewTable = ({ reviews }) => {
+const ReviewTable = ({ reviews = [] }) => {
   return (
     <div className="bg-white rounded-xl shadow overflow-hidden">
       <table className="w-full">
@@ -14,7 +14,7 @@ const ReviewTable = ({ reviews }) => {
 
             <th className="p-3 text-left">Issues</th>
 
-            <th className="p-3 text-left">Action</th>
+            <th className="p-3 text-left">Details</th>
           </tr>
         </thead>
 
@@ -34,7 +34,7 @@ const ReviewTable = ({ reviews }) => {
                   to={`/reviews/${review._id}`}
                   className="text-blue-600 hover:underline"
                 >
-                  #{review.prNumber}
+                  View Review
                 </Link>
               </td>
             </tr>

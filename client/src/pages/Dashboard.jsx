@@ -9,10 +9,8 @@ import {
 } from "../services/api";
 
 const Dashboard = () => {
-  const {
-    data,
-    loading,
-  } = useApi(getOverviewAnalytics);
+  const { data, loading } =
+    useApi(getOverviewAnalytics);
 
   const {
     data: leaderboard,
@@ -23,7 +21,7 @@ const Dashboard = () => {
     return <h1>Loading...</h1>;
   }
 
-  const analytics = data.data;
+  const analytics = data?.data || {};
 
   return (
     <div>
@@ -34,22 +32,22 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatCard
           title="Total Reviews"
-          value={analytics.totalReviews}
+          value={analytics.totalReviews || 0}
         />
 
         <StatCard
           title="Total Issues"
-          value={analytics.totalIssues}
+          value={analytics.totalIssues || 0}
         />
 
         <StatCard
           title="Critical Issues"
-          value={analytics.critical}
+          value={analytics.critical || 0}
         />
 
         <StatCard
           title="High Issues"
-          value={analytics.high}
+          value={analytics.high || 0}
         />
       </div>
 
@@ -58,7 +56,7 @@ const Dashboard = () => {
       </h2>
 
       <RepositoryTable
-        repositories={leaderboard.data}
+        repositories={leaderboard?.data || []}
       />
     </div>
   );

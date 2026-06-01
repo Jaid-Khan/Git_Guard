@@ -1,36 +1,28 @@
 import { useState } from "react";
 
-const SettingsForm = ({
-  settings,
-  onSave,
-}) => {
-  const [form, setForm] =
-    useState(settings);
+const SettingsForm = ({ settings, onSave }) => {
+  const [form, setForm] = useState(settings);
 
   const handleChange = (e) => {
-    const { name, value, checked, type } =
-      e.target;
+    const { name, value, checked, type } = e.target;
 
-    setForm({
-      ...form,
-      [name]:
-        type === "checkbox"
-          ? checked
-          : value,
-    });
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     onSave(form);
   };
 
+  if (!form) {
+    return <h1>Loading...</h1>;
+  }
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-4"
-    >
+    <form onSubmit={handleSubmit} className="space-y-4">
       <label className="block">
         <input
           type="checkbox"
@@ -38,10 +30,7 @@ const SettingsForm = ({
           checked={form.enabled}
           onChange={handleChange}
         />
-
-        <span className="ml-2">
-          Enable Reviews
-        </span>
+        <span className="ml-2">Enable Reviews</span>
       </label>
 
       <select
@@ -50,21 +39,10 @@ const SettingsForm = ({
         onChange={handleChange}
         className="border p-2 rounded"
       >
-        <option value="LOW">
-          LOW
-        </option>
-
-        <option value="MEDIUM">
-          MEDIUM
-        </option>
-
-        <option value="HIGH">
-          HIGH
-        </option>
-
-        <option value="CRITICAL">
-          CRITICAL
-        </option>
+        <option value="LOW">LOW</option>
+        <option value="MEDIUM">MEDIUM</option>
+        <option value="HIGH">HIGH</option>
+        <option value="CRITICAL">CRITICAL</option>
       </select>
 
       <label className="block">
@@ -74,10 +52,7 @@ const SettingsForm = ({
           checked={form.reviewSecurity}
           onChange={handleChange}
         />
-
-        <span className="ml-2">
-          Security Reviews
-        </span>
+        <span className="ml-2">Security Reviews</span>
       </label>
 
       <label className="block">
@@ -87,10 +62,7 @@ const SettingsForm = ({
           checked={form.reviewPerformance}
           onChange={handleChange}
         />
-
-        <span className="ml-2">
-          Performance Reviews
-        </span>
+        <span className="ml-2">Performance Reviews</span>
       </label>
 
       <label className="block">
@@ -100,16 +72,10 @@ const SettingsForm = ({
           checked={form.reviewCodeQuality}
           onChange={handleChange}
         />
-
-        <span className="ml-2">
-          Code Quality Reviews
-        </span>
+        <span className="ml-2">Code Quality Reviews</span>
       </label>
 
-      <button
-        type="submit"
-        className="bg-black text-white px-4 py-2 rounded"
-      >
+      <button type="submit" className="bg-black text-white px-4 py-2 rounded">
         Save Settings
       </button>
     </form>

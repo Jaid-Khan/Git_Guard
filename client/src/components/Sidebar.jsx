@@ -18,10 +18,6 @@ const Sidebar = () => {
       name: "Repositories",
       path: "/repositories",
     },
-    {
-      name: "Settings",
-      path: "/settings",
-    },
   ];
 
   return (
