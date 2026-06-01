@@ -19,62 +19,70 @@ const ReviewDetails = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6">
-        PR #{review.prNumber}
+        Review Details
       </h1>
 
-      <div className="space-y-4">
-        {review.issues.map((issue) => (
-          <div
-            key={issue._id}
-            className="bg-white p-5 rounded-xl shadow"
-          >
-            <h3 className="font-bold text-lg">
-              {issue.issue}
-            </h3>
+      <div className="bg-white p-6 rounded-xl shadow">
+        <p>
+          <strong>Repository:</strong>{" "}
+          {review.repoName}
+        </p>
 
-            <p>
-              Severity:
-              {" "}
-              {issue.severity}
-            </p>
+        <p>
+          <strong>PR:</strong>{" "}
+          #{review.prNumber}
+        </p>
 
-            <p>
-              Category:
-              {" "}
-              {issue.category}
-            </p>
+        <p>
+          <strong>Author:</strong>{" "}
+          {review.prAuthor}
+        </p>
 
-            <p>
-              File:
-              {" "}
-              {issue.file}
-            </p>
+        <p>
+          <strong>Total Issues:</strong>{" "}
+          {review.totalIssues}
+        </p>
+      </div>
 
-            <p>
-              Line:
-              {" "}
-              {issue.line}
-            </p>
-
-            <p>
-              {issue.explanation}
-            </p>
-
-            <div className="mt-3">
-              <strong>
-                Suggestion:
-              </strong>
+      <div className="mt-6 space-y-4">
+        {review.issues.map(
+          (issue, index) => (
+            <div
+              key={index}
+              className="bg-white p-4 rounded-xl shadow"
+            >
+              <h3 className="font-bold">
+                {issue.issue}
+              </h3>
 
               <p>
+                Severity:
+                {" "}
+                {issue.severity}
+              </p>
+
+              <p>
+                Category:
+                {" "}
+                {issue.category}
+              </p>
+
+              <p>
+                {issue.explanation}
+              </p>
+
+              <p>
+                Recommendation:
+                {" "}
                 {issue.suggestion}
               </p>
-            </div>
 
-            <pre className="bg-gray-100 mt-3 p-3 rounded">
-              {issue.fixedCode}
-            </pre>
-          </div>
-        ))}
+              <pre className="bg-gray-100 p-3 mt-2 rounded overflow-x-auto">
+                {issue.fixedCode}
+              </pre>
+            </div>
+          )
+        )}
       </div>
     </div>
   );
