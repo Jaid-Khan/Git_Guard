@@ -3,55 +3,51 @@ import useApi from "../hooks/useApi";
 import AnalyticsChart from "../components/AnalyticsChart";
 
 import {
-  getSeverityAnalytics,
-  getCategoryAnalytics,
-  getRepositoryAnalytics,
+  getSeverityDistribution,
+  getCategoryDistribution,
 } from "../services/api";
 
 const Analytics = () => {
-  const severity = useApi(
-    getSeverityAnalytics
+  const {
+    data: severity,
+    loading: severityLoading,
+  } = useApi(
+    getSeverityDistribution
   );
 
-  const categories = useApi(
-    getCategoryAnalytics
-  );
-
-  const repositories = useApi(
-    getRepositoryAnalytics
+  const {
+    data: category,
+    loading: categoryLoading,
+  } = useApi(
+    getCategoryDistribution
   );
 
   if (
-    severity.loading ||
-    categories.loading ||
-    repositories.loading
+    severityLoading ||
+    categoryLoading
   ) {
     return <h1>Loading...</h1>;
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">
+    <div>
+      <h1 className="text-3xl font-bold mb-6">
         Analytics
       </h1>
 
-      <AnalyticsChart
-        title="Severity Distribution"
-        data={severity.data.data}
-        dataKey="count"
-      />
+      <div className="grid md:grid-cols-2 gap-6">
+        <AnalyticsChart
+          title="Severity Distribution"
+          data={severity.data}
+          type="bar"
+        />
 
-      <AnalyticsChart
-        title="Category Distribution"
-        data={categories.data.data}
-        dataKey="count"
-      />
-
-      <AnalyticsChart
-        title="Repository Activity"
-        data={repositories.data.data}
-        dataKey="totalIssues"
-      />
+        <AnalyticsChart
+          title="Category Distribution"
+          data={category.data}
+          type="pie"
+        />
+      </div>
     </div>
   );
 };

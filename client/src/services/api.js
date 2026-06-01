@@ -24,4 +24,12 @@ export const getSettings = (repoName) =>
 export const updateSettings = (repoName, data) =>
   api.put(`/settings/${encodeURIComponent(repoName)}`, data);
 
+export const getOverviewAnalytics = () => api.get("/analytics/overview");
+
+export const getSeverityDistribution = () =>
+  api.get("/analytics/severity-distribution");
+
+export const getCategoryDistribution = () =>
+  api.get("/analytics/category-distribution");
+
 export default api;

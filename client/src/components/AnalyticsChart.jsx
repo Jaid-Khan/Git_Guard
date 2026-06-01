@@ -1,21 +1,55 @@
 import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
   ResponsiveContainer,
   BarChart,
   Bar,
   XAxis,
   YAxis,
-  Tooltip,
-  CartesianGrid,
 } from "recharts";
 
 const AnalyticsChart = ({
   title,
   data,
-  dataKey,
+  type,
 }) => {
+  if (type === "pie") {
+    return (
+      <div className="bg-white p-4 rounded-xl shadow">
+        <h2 className="font-bold mb-4">
+          {title}
+        </h2>
+
+        <ResponsiveContainer
+          width="100%"
+          height={300}
+        >
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="count"
+              nameKey="_id"
+              outerRadius={100}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={index}
+                />
+              ))}
+            </Pie>
+
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white p-5 rounded-xl shadow">
-      <h2 className="text-xl font-semibold mb-4">
+    <div className="bg-white p-4 rounded-xl shadow">
+      <h2 className="font-bold mb-4">
         {title}
       </h2>
 
@@ -24,15 +58,13 @@ const AnalyticsChart = ({
         height={300}
       >
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-
           <XAxis dataKey="_id" />
 
           <YAxis />
 
           <Tooltip />
 
-          <Bar dataKey={dataKey} />
+          <Bar dataKey="count" />
         </BarChart>
       </ResponsiveContainer>
     </div>
