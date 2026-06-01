@@ -16,4 +16,10 @@ export const getCategoryAnalytics = () =>
 export const getRepositoryAnalytics = () =>
   api.get("/analytics/repositories");
 
+export const getReviews = () =>
+  api.get("/reviews");
+
+export const getReviewById = (id) =>
+  api.get(`/reviews/${id}`);
+
 export default api;

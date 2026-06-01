@@ -7,6 +7,7 @@ import Analytics from "./pages/Analytics";
 import Reviews from "./pages/Reviews";
 import Settings from "./pages/Settings";
 import Repositories from "./pages/Repositories";
+import ReviewDetails from "./pages/ReviewDetails";
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
         <Route path="/repositories" element={<Repositories />} />
 
         <Route path="/settings" element={<Settings />} />
+        
+        <Route path="/reviews/:id" element={<ReviewDetails />} />
       </Route>
     </Routes>
   );
