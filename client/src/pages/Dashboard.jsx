@@ -18,78 +18,46 @@ const Dashboard = () => {
   } = useApi(getLeaderboard);
 
   if (loading || leaderboardLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center">
-          <div className="w-10 h-10 border-4 border-[#fca311] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">
-            Loading Dashboard...
-          </p>
-        </div>
-      </div>
-    );
+    return <h1>Loading...</h1>;
   }
 
   const analytics = data?.data || {};
 
   return (
-    <div className="space-y-10">
-      {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold text-white">
-          Dashboard
-        </h1>
+    <div>
+      <h1 className="text-3xl font-bold mb-6">
+        GitGuard Dashboard
+      </h1>
 
-        <p className="text-gray-400 mt-2">
-          Monitor repository reviews, issues,
-          and performance insights.
-        </p>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <StatCard
+          title="Total Reviews"
+          value={analytics.totalReviews || 0}
+        />
+
+        <StatCard
+          title="Total Issues"
+          value={analytics.totalIssues || 0}
+        />
+
+        <StatCard
+          title="Critical Issues"
+          value={analytics.critical || 0}
+        />
+
+        <StatCard
+          title="High Issues"
+          value={analytics.high || 0}
+        />
       </div>
 
-      {/* Stats Section */}
-      <section>
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <StatCard
-            title="Total Reviews"
-            value={analytics.totalReviews || 0}
-          />
+      <h2 className="text-2xl font-bold mt-10 mb-4">
+        Repository Leaderboard
+      </h2>
 
-          <StatCard
-            title="Total Issues"
-            value={analytics.totalIssues || 0}
-          />
-
-          <StatCard
-            title="Critical Issues"
-            value={analytics.critical || 0}
-          />
-
-          <StatCard
-            title="High Issues"
-            value={analytics.high || 0}
-          />
-        </div>
-      </section>
-
-      {/* Leaderboard Section */}
-      <section className="bg-[#161A22] border border-[#272B35] rounded-3xl p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-white">
-              Repository Leaderboard
-            </h2>
-
-            <p className="text-gray-400 mt-1">
-              Top repositories ranked by review
-              activity and issue detection.
-            </p>
-          </div>
-        </div>
-
-        <RepositoryTable
-          repositories={leaderboard?.data || []}
-        />
-      </section>
+      <RepositoryTable
+        repositories={leaderboard?.data || []}
+      />
     </div>
   );
 };
