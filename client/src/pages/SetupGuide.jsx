@@ -3,7 +3,7 @@ import { useState } from "react";
 const SetupGuide = () => {
   const [copied, setCopied] = useState(false);
 
-  const webhookUrl = `${import.meta.env.VITE_BACKEND_URL}/api/webhook/github`;
+  const webhookUrl = `https://git-guard.onrender.com//api/webhook/github`;
 
   const copyWebhook = async () => {
     await navigator.clipboard.writeText(webhookUrl);
