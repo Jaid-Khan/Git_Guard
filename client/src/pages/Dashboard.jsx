@@ -18,18 +18,24 @@ const Dashboard = () => {
   } = useApi(getLeaderboard);
 
   if (loading || leaderboardLoading) {
-    return <h1>Loading...</h1>;
+    return (
+      <div className="flex items-center justify-center min-h-[300px]">
+        <h1 className="text-lg font-medium">
+          Loading...
+        </h1>
+      </div>
+    );
   }
 
   const analytics = data?.data || {};
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">
+    <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6">
         GitGuard Dashboard
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatCard
           title="Total Reviews"
           value={analytics.totalReviews || 0}
@@ -51,13 +57,15 @@ const Dashboard = () => {
         />
       </div>
 
-      <h2 className="text-2xl font-bold mt-10 mb-4">
+      <h2 className="text-xl sm:text-2xl font-bold mt-8 sm:mt-10 mb-4">
         Repository Leaderboard
       </h2>
 
-      <RepositoryTable
-        repositories={leaderboard?.data || []}
-      />
+      <div className="w-full overflow-x-auto">
+        <RepositoryTable
+          repositories={leaderboard?.data || []}
+        />
+      </div>
     </div>
   );
 };
