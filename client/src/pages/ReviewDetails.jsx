@@ -1,13 +1,18 @@
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import useApi from "../hooks/useApi";
-
 import { getReviewById } from "../services/api";
 
 const ReviewDetails = () => {
   const { id } = useParams();
 
-  const { data, loading } = useApi(() => getReviewById(id));
+  const fetchReview = useCallback(
+    () => getReviewById(id),
+    [id]
+  );
+
+  const { data, loading } = useApi(fetchReview);
 
   if (loading) {
     return <h1>Loading...</h1>;
